@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mood Tracker</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="main">
+    <div class="container">
+      <h1>Mood Tracker</h1>
+    </div>
+    <div class="middler">
+      <button style="background-color: yellow;" class="button">😁 Happy</button> 
+      <button style="background-color: darkgrey;" class="button">😭 Sad</button>
+      <button style="background-color: brown;" class="button">😡 Angry</button>
+      <button style="background-color: orange;"  class="button">😃 Excited</button>
+      <button style="background-color: palevioletred; class="button">😑 Neutral</button>
+    </div>
+    <br>
+    <div class="lower">
+      <button onclick="daily()">Daily</button>
+      <button onclick="weekly()">Weekly</button>
+      <button onclick="monthly()">Monthly</button>
+    </div>
+    <div>
+      <ol class="display">
+       
+      </ol>
+    </div>
+  </div>
+  <script>
+    const btn = document.querySelectorAll('.button'); // it is used to select all buttons
+    const source = []; // array store krne kei liye liya hai
+    const display = document.querySelector('.display'); // conainter hai display lega
+
+    // Function to add mood to localStorage
+    function add(event) {
+      const mood = event.target.textContent; // mood variable bna lia hai
+      const timestamp = new Date().toISOString(); // local storage mai 2 argument chaiye haute hain hai
+      localStorage.setItem(timestamp, mood); // save stoarege
+      console.log(`Mood added: ${mood}`);
+    }
+
+    // hr ek button pr event listener lgya gya hai
+    btn.forEach((button) => {
+      button.addEventListener('click', add); // Attach click events dynamically
+    });
+
+    // clear krke kei liye banya hai iski help sei ek baar button dabne kei baad dusra clr krne kei liye layenge
+    function clearDisplay() {
+      while (display.firstChild) {
+        display.removeChild(display.firstChild); //sare kei sare hatyenge
+      }
+    }
+
+    // Function to retrieve the most recent mood (daily)
+    function daily() {
+      clearDisplay(); // Clear previous display
+      const latestKey = Object.keys(localStorage).sort().pop(); // Find the latest key
+      if (latestKey) {
+        const latestMood = localStorage.getItem(latestKey);
+        const final = document.createElement('li');
+        final.textContent = `today mood: ${latestMood}`;
+        display.appendChild(final); // Add to display
+        console.log(`Daily mood: ${latestMood}`);
+      } else {
+        console.log("No moods recorded.");
+      }
+    }
+
+ 
+    function weekly() {
+      clearDisplay(); // 
+      source.length = 0; // 
+      const keys = Object.keys(localStorage).sort(); // Sort keys
+      keys.forEach((key) => {
+        source.push(localStorage.getItem(key)); // Add moods to source
+      });
+      const lastSevenMoods = source.slice(0,7); // Get the last 7 moods
+      console.log(`Weekly moods:`, lastSevenMoods);
+      lastSevenMoods.forEach((mood) => {
+        const me = document.createElement('li');
+        me.textContent =`${mood}`;
+        // me.textContent=firse;
+        display.appendChild(me); // Add to display
+      });
+    }
+
+    function monthly() {
+      clearDisplay(); //
+      source.length = 0; // Clear the source array
+      const keys = Object.keys(localStorage).sort(); // Sort keys
+      keys.forEach((key) => {
+        source.push(localStorage.getItem(key)); // Add moods to source
+      });
+      const last30 = source.slice(-30); // Get the last 30 moods
+      last30.forEach((mood) => {
+        const me = document.createElement('li');
+        me.textContent = mood;
+        display.appendChild(me); // Add to display
+      });
+    }
+  </script>
+</body>
+</html>
